@@ -1,4 +1,3 @@
-# modules/app_service/main.tf
 resource "azurerm_app_service" "app" {
   name                = var.name
   location            = var.location
@@ -6,15 +5,25 @@ resource "azurerm_app_service" "app" {
   app_service_plan_id = var.app_service_plan
 
   site_config {
-    ip_restriction {
-      name       = "allow-ip"
-      action     = "Allow"
-      ip_address = "18.153.146.156/32"
-    }
-    ip_restriction {
-      name        = "allow-tm"
-      action      = "Allow"
-      service_tag = "AzureTrafficManager"
+    dynamic "ip_restriction" {
+      for_each = var.ip_restrictions
+      content {
+        name        = ip_restriction.value.name
+        action      = ip_restriction.value.action
+        ip_address  = lookup(ip_restriction.value, "ip_address", null)
+        service_tag = lookup(ip_restriction.value, "service_tag", null)
+      }
     }
   }
+}
+
+variable "ip_restrictions" {
+  type = list(object({
+    name        = string
+    action      = string
+    ip_address  = optional(string)
+    service_tag = optional(string)
+  }))
+  description = "List of IP restrictions"
+  default     = []
 }
