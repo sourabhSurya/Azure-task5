@@ -1,4 +1,3 @@
-# variables.tf
 variable "resource_groups" {
   type = map(object({
     name     = string
@@ -12,7 +11,6 @@ variable "app_service_plans" {
     name           = string
     location       = string
     sku            = string
-    worker_count   = number
     resource_group = string
   }))
   description = "App Service Plan configurations"
@@ -30,10 +28,9 @@ variable "app_services" {
 
 variable "traffic_manager" {
   type = object({
-    name     = string
-    rg_name  = string
-    location = string
-    method   = string
+    name    = string
+    rg_name = string
+    method  = string
   })
   description = "Traffic Manager profile configuration"
 }

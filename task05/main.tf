@@ -1,13 +1,15 @@
 module "resource_group" {
   source   = "./modules/resource_group"
   for_each = var.resource_groups
+
   name     = each.value.name
   location = each.value.location
 }
 
 module "app_service_plan" {
-  source         = "./modules/app_service_plan"
-  for_each       = var.app_service_plans
+  source   = "./modules/app_service_plan"
+  for_each = var.app_service_plans
+
   name           = each.value.name
   location       = each.value.location
   sku            = each.value.sku
@@ -15,8 +17,9 @@ module "app_service_plan" {
 }
 
 module "app_service" {
-  source           = "./modules/app_service"
-  for_each         = var.app_services
+  source   = "./modules/app_service"
+  for_each = var.app_services
+
   name             = each.value.name
   location         = each.value.location
   resource_group   = each.value.resource_group
